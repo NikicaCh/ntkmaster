@@ -3,6 +3,16 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
+require('dotenv').config()
+
+
+const firebase = require("firebase");
+require("firebase/firestore");
+
+
+firebase.initializeApp({
+    
+});
 
 ReactDOM.render(<App />, document.getElementById('root'));
 
