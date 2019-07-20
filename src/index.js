@@ -10,9 +10,7 @@ const firebase = require("firebase");
 require("firebase/firestore");
 
 
-firebase.initializeApp({
-    
-});
+firebase.initializeApp({});
 
 ReactDOM.render(<App />, document.getElementById('root'));
 
