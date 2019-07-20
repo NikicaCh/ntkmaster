@@ -10,7 +10,15 @@ const firebase = require("firebase");
 require("firebase/firestore");
 
 
-firebase.initializeApp({});
+firebase.initializeApp({
+    apiKey: "AIzaSyAMElcbneox6gS4P74lwtLjWpOcxBLMq_w",
+    authDomain: "ntkmaster-4b600.firebaseapp.com",
+    databaseURL: "https://ntkmaster-4b600.firebaseio.com",
+    projectId: "ntkmaster-4b600",
+    storageBucket: "ntkmaster-4b600.appspot.com",
+    messagingSenderId: "506995767744",
+    appId: "1:506995767744:web:615eaacf826888d0"
+});
 
 ReactDOM.render(<App />, document.getElementById('root'));
 

@@ -1,0 +1,56 @@
+@import url('https://fonts.googleapis.com/css?family=Shadows+Into+Light&display=swap');
+
+.navbar {
+    position: fixed;
+    width: 100%;
+    height: 7%;
+    background: transparent;
+    top: 0;
+    border-bottom: .2px solid #ebdaf2;
+    transition: all .2s ease-in;
+    text-align: center;
+}
+
+.navbar-scrolled {
+    height: 5.5%;
+    transition: all .2s ease-in;
+    border-bottom: .2px solid #e6e2dc;
+}
+
+.ntk-logo {
+    position: absolute;
+    opacity: .5;
+    height: 1.5vw;
+    width: 1.5vw;
+    top: 25%;
+    bottom: 20%;
+    left: 25%;
+    cursor: pointer;
+}
+.ntk-logo::selection {
+    background: transparent;
+}
+
+#line {
+    position: absolute;
+    width: .05vw;
+    height: 60%;
+    top: 17%;
+    bottom: 20%;
+    left: 27%;
+    background: #858585;
+}
+.line-scrolled {
+    display: none;
+    transition: all .4s ease-in;
+}
+
+#title {
+    position: absolute;
+    top: 18%;
+    bottom: 20%;
+    left: 28%;
+    font-family: 'Shadows Into Light', cursive;
+    font-size: 1.2vw;
+    font-weight: 400;
+}
