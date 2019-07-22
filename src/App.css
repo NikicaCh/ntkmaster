@@ -54,3 +54,6 @@
     font-size: 1.2vw;
     font-weight: 400;
 }
+#title::selection {
+    background: transparent;
+}
