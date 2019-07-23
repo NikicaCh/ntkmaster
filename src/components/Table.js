@@ -1,6 +1,8 @@
 import React from 'react';
 import MaterialTable from 'material-table';
 import Checkbox from '@material-ui/core/Checkbox';
+import TextField from '@material-ui/core/TextField';
+
 
 
 class  MaterialTableDemo extends React.Component {
@@ -11,7 +13,14 @@ class  MaterialTableDemo extends React.Component {
     this.state = {
       TableColumns: [],
       data: [],
-      style: {}
+      style: {},
+      classes: {
+        textField: {
+          // marginLeft: theme.spacing(1),
+          // marginRight: theme.spacing(1),
+          
+        }
+      }
     }
   }
 
@@ -19,22 +28,33 @@ class  MaterialTableDemo extends React.Component {
     
     this.setState({data: nextProps.records})
     Object.keys(nextProps.records[0]).map((key, index) => {
-      console.log("ITEM",key, index)
-      if(nextProps.records[0][key] == true) {
+      if(nextProps.records[0][key] === true) {
         nextProps.records[0][key] = 
           <Checkbox
             checked={true}
             color="primary"/>
-      } else if(nextProps.records[0][key] == false)
+      } else if(nextProps.records[0][key] === false) {
         nextProps.records[0][key] = 
           <Checkbox
             checked={false}
             color="primary"/>
+      } else if(nextProps.records[0][key] === "") {
+        nextProps.records[0][key] = 
+        <TextField
+          id="standard-helperText"
+          // label="Insert Date"
+          defaultValue="Default Value"
+          className={this.state.classes.textField}
+          // helperText="default: today's date"
+          margin="normal"
+      />
+      }
     })
 
   }
 
   componentDidMount() {
+    console.log(Date())
     // <Checkbox
     //     checked={state.checkedA}
     //     onChange={handleChange('checkedA')}
@@ -46,9 +66,10 @@ class  MaterialTableDemo extends React.Component {
     const TableColumns = this.props.tableColumns;
     const style = {
       position: "absolute",
-      top: "10%",
+      top: "15%",
       width: "90%",
-      right: "5%",
+      left: "2.5%",
+      fontSize: "1vw"
     }
     this.setState({TableColumns, style})
   }
@@ -59,7 +80,6 @@ class  MaterialTableDemo extends React.Component {
         title="Season 201"
         columns={this.state.TableColumns}
         data={this.state.data}
-        style={this.state.style}
         editable={{
           onRowAdd: newData =>
             new Promise(resolve => {
