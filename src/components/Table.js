@@ -3,6 +3,8 @@ import MaterialTable from 'material-table';
 import Checkbox from '@material-ui/core/Checkbox';
 import TextField from '@material-ui/core/TextField';
 
+import moment from 'moment'
+
 
 
 class  MaterialTableDemo extends React.Component {
@@ -54,7 +56,7 @@ class  MaterialTableDemo extends React.Component {
   }
 
   componentDidMount() {
-    console.log(Date())
+    console.log(moment("July 12, 2019 at 12:00:00 AM UTC+2").format())
     // <Checkbox
     //     checked={state.checkedA}
     //     onChange={handleChange('checkedA')}
@@ -67,7 +69,7 @@ class  MaterialTableDemo extends React.Component {
     const style = {
       position: "absolute",
       top: "15%",
-      width: "90%",
+      width: "95%",
       left: "2.5%",
       fontSize: "1vw"
     }
@@ -80,6 +82,7 @@ class  MaterialTableDemo extends React.Component {
         title="Season 201"
         columns={this.state.TableColumns}
         data={this.state.data}
+        style={this.state.style}
         editable={{
           onRowAdd: newData =>
             new Promise(resolve => {
