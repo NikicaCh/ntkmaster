@@ -10,7 +10,7 @@ const firebase = require("firebase");
 require("firebase/firestore");
 
 
-firebase.initializeApp({
+const app = firebase.initializeApp({
     apiKey: "AIzaSyAMElcbneox6gS4P74lwtLjWpOcxBLMq_w",
     authDomain: "ntkmaster-4b600.firebaseapp.com",
     databaseURL: "https://ntkmaster-4b600.firebaseio.com",
@@ -19,6 +19,7 @@ firebase.initializeApp({
     messagingSenderId: "506995767744",
     appId: "1:506995767744:web:615eaacf826888d0"
 });
+const db = firebase.firestore(app);
 
 ReactDOM.render(<App />, document.getElementById('root'));
 

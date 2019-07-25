@@ -1,7 +1,8 @@
-import React from 'react';
-import MaterialTable from 'material-table';
-import Checkbox from '@material-ui/core/Checkbox';
-import TextField from '@material-ui/core/TextField';
+import React from 'react'
+import MaterialTable from 'material-table'
+import Checkbox from '@material-ui/core/Checkbox'
+import TextField from '@material-ui/core/TextField'
+import firebase from 'firebase'
 
 import moment from 'moment'
 
@@ -22,12 +23,14 @@ class  MaterialTableDemo extends React.Component {
           // marginRight: theme.spacing(1),
           
         }
-      }
+      },
+      newRecords: [],
+      working: false
     }
   }
 
   componentWillReceiveProps(nextProps) {
-    
+    //state ako dodavas i ako ne dodavas
     this.setState({data: nextProps.records})
     Object.keys(nextProps.records[0]).map((key, index) => {
       if(nextProps.records[0][key] === true) {
@@ -57,14 +60,6 @@ class  MaterialTableDemo extends React.Component {
 
   componentDidMount() {
     console.log(moment("July 12, 2019 at 12:00:00 AM UTC+2").format())
-    // <Checkbox
-    //     checked={state.checkedA}
-    //     onChange={handleChange('checkedA')}
-    //     value="checkedA"
-    //     inputProps={{
-    //       'aria-label': 'primary checkbox',
-    //     }}
-    //   />
     const TableColumns = this.props.tableColumns;
     const style = {
       position: "absolute",
@@ -74,6 +69,23 @@ class  MaterialTableDemo extends React.Component {
       fontSize: "1vw"
     }
     this.setState({TableColumns, style})
+    window.addEventListener("beforeunload", () => { 
+      this.addToDb(this.state.newRecords)
+    });
+  }
+
+  addToDb = (data) => {
+    data.map((_data) => {
+      const uniqueId = _data.Bolla;
+      firebase.firestore().collection("Bolla").doc(uniqueId).set(_data)
+      .then(() => {
+          console.log("Document successfully written!");
+      })
+      .catch((error) => {
+          console.error("Error writing document: ", error);
+      });
+    })
+    this.setState({newRecords: []})
   }
   
   render() {
@@ -85,14 +97,19 @@ class  MaterialTableDemo extends React.Component {
         style={this.state.style}
         editable={{
           onRowAdd: newData =>
-            new Promise(resolve => {
-              setTimeout(() => {
-                resolve();
-                const data = [...this.state.data];
-                data.push(newData);
-                this.setState({ ...this.state, data });
-              }, 600);
-            }),
+          new Promise(resolve => {
+            this.setState({working: true})
+            setTimeout(() => {
+              resolve();
+              let data = [...this.state.data];
+              let newRecords = [...this.state.newRecords]
+              data.push(newData);
+              newRecords.push(newData)
+              this.setState({ ...this.state, data });
+              this.setState({ ...this.state, newRecords });
+              this.setState({working: false})
+            }, 600);
+          }),
           onRowUpdate: (newData, oldData) =>
             new Promise(resolve => {
               setTimeout(() => {
@@ -106,9 +123,7 @@ class  MaterialTableDemo extends React.Component {
             new Promise(resolve => {
               setTimeout(() => {
                 resolve();
-                const data = [...this.state.data];
-                data.splice(data.indexOf(oldData), 1);
-                this.setState({ ...this.state, data });
+                console.log("DELETED")
               }, 600);
             }),
         }}

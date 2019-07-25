@@ -20,11 +20,6 @@ class App extends React.Component {
 
   }
 
-  componentWillUnmount() {
-    firebase.auth.getInstance().signOut();
-
-  }
-
   render() {
     return(
       <div className="App">

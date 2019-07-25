@@ -14,7 +14,7 @@ class Season extends React.Component {
         this.state = {
           records: null,
           tableColumns: [
-            {title: "Import Number", field: "ImportNo."},
+            {title: "Import Number", field: "ImportNo"},
             {title: "Bolla", field: "Bolla"},
             {title: "Article", field: "Art"},
             {title: "Quantity", field: "Quantity"},
