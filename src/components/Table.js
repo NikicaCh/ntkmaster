@@ -33,26 +33,25 @@ class  MaterialTableDemo extends React.Component {
     if(! this.state.updated) {
       this.setState({data: nextProps.records})
       Object.keys(nextProps.records[0]).map((key, index) => {
-        if(nextProps.records[0][key] === true) {
-          nextProps.records[0][key] = 
-            <Checkbox
-              checked={true}
-              color="primary"/>
-        } else if(nextProps.records[0][key] === false) {
+        if(nextProps.records[0][key] == "false") {
           nextProps.records[0][key] = 
             <Checkbox
               checked={false}
               color="primary"/>
-        } else if(nextProps.records[0][key] === "") {
+        } else if(nextProps.records[0][key] == "true") {
           nextProps.records[0][key] = 
-          <TextField
-            id="standard-helperText"
-            // label="Insert Date"
-            defaultValue="Default Value"
-            className={this.state.classes.textField}
-            // helperText="default: today's date"
-            margin="normal"
-        />
+            <Checkbox
+              checked={true}
+              color="primary"/>
+        } else if(nextProps.records[0][key] == "") {
+          nextProps.records[0][key] = 
+            <TextField
+              id="standard-helperText"
+              label="Insert Date"
+              defaultValue="Default Value"
+              className={this.state.classes.textField}
+              // helperText="default: today's date"
+              margin="normal"/>
         }
         this.setState({data: nextProps.records})
       })
@@ -60,20 +59,7 @@ class  MaterialTableDemo extends React.Component {
     this.setState({updated: true})
   }
 
-  componentDidMount() {
-    
-    console.log(this.state.newRecords.length)
-    window.onbeforeunload = confirmExit;
-    function confirmExit() {
-      if(!this.state.newRecords.length == 0) {
-        return "You have attempted to leave this page. Are you sure?";
-      } else {
-        window.onbeforeunload = function () {
-          // blank function do nothing
-        }
-      }
-    }
-    
+  componentDidMount() {    
     const TableColumns = this.props.tableColumns;
     const style = {
       position: "absolute",
@@ -122,6 +108,7 @@ class  MaterialTableDemo extends React.Component {
         style={this.state.style}
         editable={{
           onRowAdd: newData =>
+
           new Promise(resolve => {
             this.setState({working: true})
             setTimeout(() => {
