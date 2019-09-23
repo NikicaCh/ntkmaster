@@ -3,10 +3,9 @@ import MaterialTable from 'material-table'
 import Checkbox from '@material-ui/core/Checkbox'
 import TextField from '@material-ui/core/TextField'
 import firebase from 'firebase'
-
-import moment from 'moment'
-import { tsThisType } from '@babel/types';
-
+import date from 'date-and-time'
+import Snackbar from './SnackBar'
+import DatePicker from './DatePicker'
 
 
 class  MaterialTableDemo extends React.Component {
@@ -23,84 +22,97 @@ class  MaterialTableDemo extends React.Component {
         }
       },
       newRecords: [],
-      updated: false,
-      updatingDatabase: false
+      selectedDate: "",
     }
-    this.addToDb = this.addToDb.bind(this)
+    this.handleCheckBox = this.handleCheckBox.bind(this)
+    this.selectDate = this.selectDate.bind(this)
   }
 
   componentWillReceiveProps(nextProps) {
-    if(! this.state.updated) {
       this.setState({data: nextProps.records})
-      Object.keys(nextProps.records[0]).map((key, index) => {
-        if(nextProps.records[0][key] == "false") {
-          nextProps.records[0][key] = 
-            <Checkbox
-              checked={false}
-              color="primary"/>
-        } else if(nextProps.records[0][key] == "true") {
-          nextProps.records[0][key] = 
-            <Checkbox
-              checked={true}
-              color="primary"/>
-        } else if(nextProps.records[0][key] == "") {
-          nextProps.records[0][key] = 
-            <TextField
-              id="standard-helperText"
-              label="Insert Date"
-              defaultValue="Default Value"
-              className={this.state.classes.textField}
-              // helperText="default: today's date"
-              margin="normal"/>
-        }
+      Object.keys(nextProps.records).map((key, index) => {
+        Object.keys(nextProps.records[key]).map((_key, _index) => {
+          if(typeof nextProps.records[key][_key] == "boolean") {
+            const id = nextProps.records[key].Bolla;
+            const field = _key;
+            const value = !nextProps.records[key][_key];
+            let keys = Object.keys(nextProps.records[key])
+            let date = keys[(keys.indexOf(_key) + 1)]
+            nextProps.records[key][_key] = 
+              <Checkbox
+                onChange={ (key) => {
+                  this.handleCheckBox(id, field, value, date)
+                }}
+                checked={nextProps.records[key][_key]}
+                color="primary"/>
+          } else if(typeof nextProps.records[key][_key] == "string" && nextProps.records[key][_key] == "" ) {
+            // nextProps.records[key][_key] = 
+            //   <TextField
+            //     id="standard-helperText"
+            //     label="Insert Date"
+            //     defaultValue=""
+            //     className={this.state.classes.textField}
+            //     // helperText="default: today's date"
+            //     margin="normal"/>
+          }
+        })
         this.setState({data: nextProps.records})
       })
-    }
     this.setState({updated: true})
   }
 
   componentDidMount() {    
+    console.log(document.querySelectorAll(".MuiTableBody-root"))
     const TableColumns = this.props.tableColumns;
     const style = {
       position: "absolute",
       top: "15%",
-      width: "95%",
-      left: "2.5%",
-      fontSize: "1vw",
+      width: "83%",
+      left: "16%",
+      color: "#3f51b5"
     }
-    this.setState({TableColumns, style})
-    setInterval(() => {
-      this.addToDb(this.state.newRecords);
-    }, 30000)
+    let now = new Date();
+    const selectedDate = date.format(now, "DD.MM.YYYY")
+    this.setState({TableColumns, style, selectedDate})
   }
 
-  addToDb = (data) => {
-    window.addEventListener("beforeunload", () => {
-      return "blah blah blah"
+
+  handleCheckBox = (id, field, value, fieldDate) => {
+    let doc = firebase.firestore().collection("Bolla").doc(id);
+    const fieldD = this.state.selectedDate;
+    const object = {}
+    object[field] = value;
+    if(value === true) object[fieldDate] = fieldD;
+    else object[fieldDate] = ""
+    return doc.update(object)
+    .then(function() {
+        console.log("Document successfully updated!");
     })
-    this.setState({updatingDatabase: true})
-    data.map((_data) => {
-      const uniqueId = _data.Bolla;
-      firebase.firestore().collection("Bolla").doc(uniqueId).set(_data)
-      .then(() => {
-          console.log("Document successfully written!");
-          this.setState({newRecords: []})
-          window.addEventListener("beforeunload", () => {
-            //blank
-          })
-      })
-      .catch((error) => {
-          console.error("Error writing document: ", error);
-      });
-    })
-    this.setState({newRecords: [], updatingDatabase: false})
+    .catch(function(error) {
+        // The document probably doesn't exist.
+        console.error("Error updating document: ", error);
+    });
   }
+
+  selectDate = (date) => {
+    this.setState({selectedDate: date})
+    this.props.selectDate(date)
+  }
+
+  
   
   render() {
-    if(this.state.newRecords.length !== 0) {
-      this.addToDb(this.state.newRecords)
-    } 
+    
+    let now = new Date();
+    const importDate = this.state.selectedDate;
+    let newObject = this.props.newObject;
+    newObject.ImpDate = importDate;
     return (
+      <div>
+      <DatePicker
+        date={now}
+        selectDate={this.selectDate}/>
+      <Snackbar />
       <MaterialTable
         title="Season 201"
         columns={this.state.TableColumns}
@@ -108,30 +120,30 @@ class  MaterialTableDemo extends React.Component {
         style={this.state.style}
         editable={{
           onRowAdd: newData =>
-
           new Promise(resolve => {
-            this.setState({working: true})
             setTimeout(() => {
               resolve();
+              Object.keys(newData).map((key, index) => {
+                newObject[key] = newData[key]
+              })
               let data = [...this.state.data];
-              let newRecords = [...this.state.newRecords]
-              data.push(newData);
-              newRecords.push(newData)
+              let newRecords = [...this.props.newRecords]
+              data.push(newObject);
+              newRecords.push(newObject)
               this.setState({ ...this.state, data });
-              this.setState({ ...this.state, newRecords });
+              this.props.setNewRecords(newRecords);
             }, 600);
           }),
           onRowUpdate: (newData, oldData) =>
             new Promise(resolve => {
               setTimeout(() => {
                 resolve();
-                const data = [...this.state.data];
-                data[data.indexOf(oldData)] = newData;
-                this.setState({ ...this.state, data });
+                this.props.updateDb(newData, oldData)
               }, 600);
             }),
           onRowDelete: oldData =>
             new Promise(resolve => {
+              this.props.deleteFromDb(oldData.Bolla)
               setTimeout(() => {
                 resolve();
                 console.log("DELETED")
@@ -139,6 +151,7 @@ class  MaterialTableDemo extends React.Component {
             }),
         }}
       />
+      </div>
       );
   }
 }

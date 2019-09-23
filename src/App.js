@@ -1,9 +1,9 @@
 import React from 'react'
 import './App.css'
-import firebase from 'firebase'
 import { Route, Switch, BrowserRouter } from "react-router-dom"
 import Home from './components/Home'
 import Season from './components/Season'
+import Articles from './components/Articles'
 
 
 class App extends React.Component {
@@ -27,6 +27,7 @@ class App extends React.Component {
           <Switch>
             <Route exact path="/" component={Home} />
             <Route exact path="/season" component={Season} />
+            <Route exact path="/articles" component={Articles} />
           </Switch>
         </BrowserRouter>
       </div>
