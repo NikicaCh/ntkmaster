@@ -6,6 +6,7 @@ import firebase from 'firebase'
 import date from 'date-and-time'
 import Snackbar from './SnackBar'
 import DatePicker from './DatePicker'
+import { isThisISOWeek } from 'date-fns/esm'
 
 
 class  MaterialTableDemo extends React.Component {
@@ -27,6 +28,8 @@ class  MaterialTableDemo extends React.Component {
     this.handleCheckBox = this.handleCheckBox.bind(this)
     this.selectDate = this.selectDate.bind(this)
   }
+  
+  
 
   componentWillReceiveProps(nextProps) {
       this.setState({data: nextProps.records})
@@ -59,22 +62,9 @@ class  MaterialTableDemo extends React.Component {
         this.setState({data: nextProps.records})
       })
     this.setState({updated: true})
-    let tableRows = document.getElementsByTagName("tbody")[0].rows;
-    if(tableRows.length >1) {
-      let total = 0;
-      Object.keys(tableRows).map((key) => {
-        total += parseInt(tableRows[key].getElementsByTagName("td")[4].innerHTML)
-      })
-      console.log(total)
-    }
-    // tableRows.map((row) => {
-    //   let td = row.getElementsByTagName("td")[4]
-    //   console.log(td)
-    // })
   }
 
   componentDidMount() {    
-    console.log(document.querySelectorAll(".MuiTableBody-root"))
     const TableColumns = this.props.tableColumns;
     const style = {
       position: "absolute",
@@ -87,14 +77,31 @@ class  MaterialTableDemo extends React.Component {
     const selectedDate = date.format(now, "DD.MM.YYYY")
     this.setState({TableColumns, style, selectedDate})
 
-    // let inputs = document.querySelectorAll(".MuiInput-input");
+    let inputs = document.querySelectorAll(".MuiInput-input");
+    let query = inputs[1].className
+    let input = document.getElementsByClassName(query)[0]
+    input.addEventListener("change", (e) => {
+      e.preventDefault();
+      this.props.countRows();
+  })
+    console.log(input)
+    // inputs[1].addEventListener("input", (e) => {
+    //   e.preventDefault();
+    //   console.log(e.target.value)
+    //   this.countRows();
+    // })
     // for(let input in inputs) {
     //   input.addEventListener("input", (e) => {
-    //     if(e.data !== null){
-    //       console.log("TYPED:", e.target.defaultValue+e.data)
-    //     }
+    //     this.countRows();
     //   })
     // }
+    // let inputs = document.querySelectorAll('.MuiInputBase-inputAdornedStart');
+    // for (let input in inputs) {
+    //   input.addEventListener("input",(e) => {
+    //     console.log("AHA")
+    //   })
+    // }
+    // let inputs = document.getElementsByClassName(".MuiInputBase-input");
   }
 
 

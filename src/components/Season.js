@@ -60,6 +60,7 @@ class Season extends React.Component {
           newRecords: [],
           selectedDate: "",
           exportRecords: [],
+          total: 0,
         }
 
         this.wakeUpServer = this.wakeUpServer.bind(this)
@@ -72,7 +73,21 @@ class Season extends React.Component {
         this.deleteFromDb = this.deleteFromDb.bind(this)
         this.selectDate = this.selectDate.bind(this)
         this.expReport = this.expReport.bind(this)
+        this.countRows = this.countRows.bind(this)
     }
+
+    countRows = () => {
+        let tableRows = document.getElementsByTagName("tbody")[0].rows;
+        if(tableRows.length >1) {
+          let total = 0;
+          Object.keys(tableRows).map((key) => {
+            total += parseInt(tableRows[key].getElementsByTagName("td")[4].innerHTML)
+          })
+          this.setState({total})
+        } else {
+          this.setState({total: 0})
+        }
+      }
 
     wakeUpServer = () => {
         Axios.post(`${theUrl}wakeup`, {
@@ -103,6 +118,7 @@ class Season extends React.Component {
         setInterval(() => {
             this.addToDb(this.state.newRecords);
           }, 30000)
+        this.countRows();
 
         // document.getElementById("excel").addEventListener("change", (e) => {
         //     let wb = new Excel.Workbook();
@@ -137,7 +153,9 @@ class Season extends React.Component {
                 array.push(record)
             } 
         })
-        this.setState({records:array, exportRecords:array})
+        this.setState({records:array, exportRecords:array}, () => {
+            this.countRows();
+        })
     }
 
     queryIndex = (index) => {
@@ -262,6 +280,13 @@ class Season extends React.Component {
     selectDate = (date) => {
         this.setState({selectedDate: date})
     }
+    componentWillUnmount() {
+        firebase.auth().signOut().then(function() {
+            // Sign-out successful.
+          }, function(error) {
+            // An error happened.
+          });
+    }
 
 
 
@@ -271,6 +296,9 @@ class Season extends React.Component {
         }
         return( 
             <div className="Season">
+                <div className="total">
+                    <span>Total: {this.state.total}</span>
+                </div>
                 <div className="report-button">
                     <CircularIntegration 
                         print = {this.dailyReport}/>
@@ -288,7 +316,8 @@ class Season extends React.Component {
                     setNewRecords={this.newRecords}
                     updateDb={this.updateDb}
                     deleteFromDb={this.deleteFromDb}
-                    selectDate={this.selectDate}/>
+                    selectDate={this.selectDate}
+                    countRows={this.countRows}/>
                 <QueryTab 
                     queryIndex={this.queryIndex}/>
                 {/* {this.state.data} */}

@@ -34,3 +34,10 @@
     top: 30%;
     left: 5%;
 }
+
+.total {
+    position: fixed;
+    top: 40%;
+    left: 4%;
+    font-size: 1.2vw;
+}

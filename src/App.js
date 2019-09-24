@@ -4,6 +4,8 @@ import { Route, Switch, BrowserRouter } from "react-router-dom"
 import Home from './components/Home'
 import Season from './components/Season'
 import Articles from './components/Articles'
+import firebase from 'firebase'
+
 
 
 class App extends React.Component {
@@ -18,6 +20,13 @@ class App extends React.Component {
   componentDidMount = () => {
     
 
+  }
+  componentWillUnmount() {
+    firebase.auth().signOut().then(function() {
+      // Sign-out successful.
+    }, function(error) {
+      // An error happened.
+    });
   }
 
   render() {
