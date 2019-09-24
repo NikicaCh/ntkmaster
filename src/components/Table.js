@@ -59,6 +59,18 @@ class  MaterialTableDemo extends React.Component {
         this.setState({data: nextProps.records})
       })
     this.setState({updated: true})
+    let tableRows = document.getElementsByTagName("tbody")[0].rows;
+    if(tableRows.length >1) {
+      let total = 0;
+      Object.keys(tableRows).map((key) => {
+        total += parseInt(tableRows[key].getElementsByTagName("td")[4].innerHTML)
+      })
+      console.log(total)
+    }
+    // tableRows.map((row) => {
+    //   let td = row.getElementsByTagName("td")[4]
+    //   console.log(td)
+    // })
   }
 
   componentDidMount() {    
@@ -74,6 +86,15 @@ class  MaterialTableDemo extends React.Component {
     let now = new Date();
     const selectedDate = date.format(now, "DD.MM.YYYY")
     this.setState({TableColumns, style, selectedDate})
+
+    // let inputs = document.querySelectorAll(".MuiInput-input");
+    // for(let input in inputs) {
+    //   input.addEventListener("input", (e) => {
+    //     if(e.data !== null){
+    //       console.log("TYPED:", e.target.defaultValue+e.data)
+    //     }
+    //   })
+    // }
   }
 
 
@@ -118,6 +139,9 @@ class  MaterialTableDemo extends React.Component {
         columns={this.state.TableColumns}
         data={this.state.data}
         style={this.state.style}
+        options={{
+          paging: false
+        }}
         editable={{
           onRowAdd: newData =>
           new Promise(resolve => {

@@ -75,7 +75,7 @@ class Season extends React.Component {
     }
 
     wakeUpServer = () => {
-        Axios.post(theUrl, {
+        Axios.post(`${theUrl}wakeup`, {
             data: "wakeUP!"
         })
         .then(response => console.log(response))
