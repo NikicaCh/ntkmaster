@@ -14,7 +14,8 @@ class Articles extends React.Component {
         this.state = {
             tableColumns: [
                 {title: "Name", field: "Name"},
-                {title: "Price", field: "Price"}
+                {title: "Price", field: "Price"},
+                {title: "Image", field: "Image"}
             ],
             records: [],
             newObject: {

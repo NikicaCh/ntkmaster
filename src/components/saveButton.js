@@ -67,7 +67,7 @@ export default function CircularIntegration(props) {
         setLoading(false);
         setTimeout(() => {
           setSuccess(false)
-        }, 3000)
+        }, 5000)
       }, 550);
     }
   }

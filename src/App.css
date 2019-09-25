@@ -41,3 +41,23 @@
     left: 4%;
     font-size: 1.2vw;
 }
+
+.stats {
+    position: absolute;
+    top: 12%;
+    left: 15%;
+    width: 65%;
+    height: 20%;
+    background-color: rgb(43, 77, 172);
+    border-radius: 10px;
+}
+
+.balance {
+    position: absolute;
+    top: 12%;
+    left: 81%;
+    width: 15%;
+    height: 20%;
+    background-color: rgb(43, 77, 172);
+    border-radius: 10px;
+}
