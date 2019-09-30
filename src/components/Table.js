@@ -7,6 +7,7 @@ import date from 'date-and-time'
 import Snackbar from './SnackBar'
 import DatePicker from './DatePicker'
 import { isThisISOWeek } from 'date-fns/esm'
+import Switches from './Switch'
 
 
 class  MaterialTableDemo extends React.Component {
@@ -24,11 +25,25 @@ class  MaterialTableDemo extends React.Component {
       },
       newRecords: [],
       selectedDate: "",
+      pagination: ""
     }
     this.handleCheckBox = this.handleCheckBox.bind(this)
     this.selectDate = this.selectDate.bind(this)
+    this.switchPagination = this.switchPagination.bind(this)
   }
   
+  switchPagination = (state) => {
+    console.log("STATE", state)
+    if(state === false) {
+      let obj = {
+        paging: false
+      }
+      this.setState({pagination: obj })
+    } else {
+      let obj = ""
+      this.setState({pagination: obj })
+    }
+  }
   
 
   componentWillReceiveProps(nextProps) {
@@ -141,14 +156,13 @@ class  MaterialTableDemo extends React.Component {
         date={now}
         selectDate={this.selectDate}/>
       <Snackbar />
+      <Switches  pagination={this.switchPagination}/>
       <MaterialTable
         title="Season 201"
         columns={this.state.TableColumns}
         data={this.state.data}
         style={this.state.style}
-        options={{
-          paging: false
-        }}
+        options={this.state.pagination}
         editable={{
           onRowAdd: newData =>
           new Promise(resolve => {

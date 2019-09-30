@@ -61,3 +61,13 @@
     background-color: rgb(43, 77, 172);
     border-radius: 10px;
 }
+
+.pagination-switch {
+    position: fixed;
+    top: 45%;
+    left: 3%;
+}
+
+.pagination-switch span {
+    font-size: 1vw;
+}

@@ -78,13 +78,17 @@ class Season extends React.Component {
 
     countRows = () => {
         let tableRows = document.getElementsByTagName("tbody")[0].rows;
-        if(tableRows.length >1) {
+        if(tableRows.length > 1) {
           let total = 0;
           Object.keys(tableRows).map((key) => {
             total += parseInt(tableRows[key].getElementsByTagName("td")[4].innerHTML)
           })
           this.setState({total})
-        } else {
+        } else if(tableRows.length === 1 && tableRows[0].getElementsByTagName("td")[4] !== undefined) {
+            let total = tableRows[0].getElementsByTagName("td")[4].innerHTML
+            this.setState({total: total})
+        }
+         else {
           this.setState({total: 0})
         }
       }
