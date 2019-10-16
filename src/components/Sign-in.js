@@ -50,7 +50,7 @@ const submitForm = (e) => {
     })
     .catch(function(error) {
         var errorCode = error.code;
-        console.log(errorCode)
+        console.log("Sign in Error",errorCode)
     });
       
       

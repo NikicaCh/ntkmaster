@@ -11,7 +11,7 @@ require("firebase/firestore");
 
 
 const app = firebase.initializeApp({
-    apiKey: process.env.REACT_APP_API_KEY,
+    apiKey: "AIzaSyAMElcbneox6gS4P74lwtLjWpOcxBLMq_w",
     authDomain: "ntkmaster-4b600.firebaseapp.com",
     databaseURL: "https://ntkmaster-4b600.firebaseio.com",
     projectId: "ntkmaster-4b600",

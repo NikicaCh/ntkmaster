@@ -96,7 +96,6 @@ class  MaterialTableDemo extends React.Component {
     let query = inputs[1].className
     let input = document.getElementsByClassName(query)[0]
     input.addEventListener("change", (e) => {
-      e.preventDefault();
       this.props.countRows();
   })
     console.log(input)
@@ -160,7 +159,7 @@ class  MaterialTableDemo extends React.Component {
       <MaterialTable
         title="Season 201"
         columns={this.state.TableColumns}
-        data={this.state.data}
+        data={this.props.records}
         style={this.state.style}
         options={this.state.pagination}
         editable={{
@@ -188,10 +187,9 @@ class  MaterialTableDemo extends React.Component {
             }),
           onRowDelete: oldData =>
             new Promise(resolve => {
-              this.props.deleteFromDb(oldData.Bolla)
+              this.props.deleteFromDb(oldData.Bolla || oldData.Name)
               setTimeout(() => {
                 resolve();
-                console.log("DELETED")
               }, 600);
             }),
         }}
