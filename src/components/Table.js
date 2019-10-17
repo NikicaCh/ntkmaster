@@ -25,7 +25,9 @@ class  MaterialTableDemo extends React.Component {
       },
       newRecords: [],
       selectedDate: "",
-      pagination: ""
+      pagination: {
+        "paging": false
+      }
     }
     this.handleCheckBox = this.handleCheckBox.bind(this)
     this.selectDate = this.selectDate.bind(this)
