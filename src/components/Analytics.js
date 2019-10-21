@@ -6,14 +6,15 @@ import date from 'date-and-time'
 
 
 const Stat = (props) => {
+    const [total, setTotal] = useState(0)
     setTimeout(( ) => {
-        props.fetchData(props.data, props.date, props.name)
+        setTotal(props.fetchData(props.data, props.date, props.name))
     }, 1000)
     return (
         <div className="stat">
         {props.name}
         <br />
-        {props.total}
+        {total + "€"}
         </div>
     )
 }
@@ -31,8 +32,8 @@ class Analytics extends React.Component {
 
         this.state = {
             records: [],
+            arts: [],
             selectedDate: "",
-            today: ""
         }
         this.fetchData = this.fetchData.bind(this)
         this.selectDate = this.selectDate.bind(this)
@@ -52,29 +53,22 @@ class Analytics extends React.Component {
             let art = grouped[_key][0].Art;
             let quantity = 0;
             grouped[_key].map((obj) => {
-                quantity += obj.Quantity;
+                quantity += parseInt(obj.Quantity);
             })
-            let price = 0;
-            firebase
-            .firestore()
-            .collection("Art")
-            .doc(art).get()
-            .then(function(doc) {
-                if (doc.exists) {
-                    price = doc.data().Price;
-                    let add = parseFloat(price)*quantity;
-                    total += add;
-                } else {
-                    // doc.data() will be undefined in this case
-                    console.log("No such document!");
+            let price;
+            this.state.arts.map((_art) => {
+                if(_art.Name === art) {
+                    price = parseFloat(_art.Price)
                 }
-            }).catch(function(error) {
-                console.log("Error getting document:", error);
-            });
-            this.setState({today:total}, () => {
-                return 0
             })
+            let add = ((price*quantity)*0.98).toFixed(2);
+            console.log("ADD",add)
+            // this.setState({today: this.state.today + add}, () => {
+            //     console.log("STATE")
+            // })
+            total = (parseFloat(total) + parseFloat(add)).toFixed(2)
         })
+        return total
     }
 
     componentDidMount() {
@@ -92,8 +86,19 @@ class Analytics extends React.Component {
             this.setState({records: data}, () => {
             })
         })
-        this.setState({selectedDate})
-
+        firebase
+            .firestore()
+            .collection("Art")
+            .onSnapshot(serverUpdate => {
+                let array = [];
+                const data = serverUpdate.docs.map(_docs => {
+                    const d = _docs.data();
+                    array[d.Name] = d.Price
+                    console.log("ARRAY", array)
+                    return d;
+                })
+                this.setState({arts: data})
+            })
     }
 
     selectDate = (date) => {
@@ -109,7 +114,10 @@ class Analytics extends React.Component {
                 <DatePicker
                     date={now}
                     selectDate={this.selectDate}/>
-                <div className="stats"><Stat name="TODAY"  data={this.state.records} date={this.state.selectedDate} fetchData={this.fetchData} total={this.state.today}/></div>
+                <div className="stats">
+                    <Stat name="TODAY"  data={this.state.records} date={this.state.selectedDate} fetchData={this.fetchData}/>
+                    <Stat name="TODAY"  data={this.state.records} date={this.state.selectedDate} fetchData={this.fetchData}/>
+                </div>
                 <div className="balance"></div>
             </div>
         )
