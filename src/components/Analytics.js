@@ -6,7 +6,7 @@ import date from 'date-and-time'
 
 
 const Stat = (props) => {
-    const [total, setTotal] = useState(0)
+    const [total, setTotal] = useState(null)
     setTimeout(( ) => {
         setTotal(props.fetchData(props.data, props.date, props.name))
     }, 1000)
@@ -34,6 +34,7 @@ class Analytics extends React.Component {
             records: [],
             arts: [],
             selectedDate: "",
+            stats: []
         }
         this.fetchData = this.fetchData.bind(this)
         this.selectDate = this.selectDate.bind(this)
@@ -62,19 +63,22 @@ class Analytics extends React.Component {
                 }
             })
             let add = ((price*quantity)*0.98).toFixed(2);
-            console.log("ADD",add)
-            // this.setState({today: this.state.today + add}, () => {
-            //     console.log("STATE")
-            // })
             total = (parseFloat(total) + parseFloat(add)).toFixed(2)
         })
         return total
     }
 
     componentDidMount() {
+        let days = [ "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
         let now = new Date();
         const selectedDate = date.format(now, "DD.MM.YYYY")
         this.setState({selectedDate})
+        let d = new Date();
+        d.setDate(d.getDate() -1)
+        const yesterday = date.format(d, "DD.MM.YYYY")
+        let g = new Date();
+        g.setDate(d.getDate() -2)
+        const dayBeforeYesterday = date.format(g, "DD.MM.YYYY")
         firebase
         .firestore()
         .collection("Bolla")  
@@ -84,8 +88,28 @@ class Analytics extends React.Component {
                 return d;
             })
             this.setState({records: data}, () => {
+                let notSunday = "";
+                let dayBefore = "";
+                if(days[d.getDay() -1] === "Sunday") {
+                    notSunday = days[d.getDay() - 2]
+                    dayBefore = days[d.getDay() - 3]
+                } else if(days[d.getDay() -2] === "Sunday") {
+                    notSunday = days[d.getDay() -1]
+                    dayBefore = days[d.getDay() - 3]
+                }
+                else {
+                    notSunday = days[d.getDay() -1]
+                    dayBefore = days[d.getDay() -2]
+                }
+                let array = [
+                    <Stat name="Today"  data={this.state.records} date={this.state.selectedDate} fetchData={this.fetchData}/>,
+                    <Stat name={notSunday}  data={this.state.records} date={yesterday} fetchData={this.fetchData}/>,
+                    <Stat name={dayBefore}  data={this.state.records} date={dayBeforeYesterday} fetchData={this.fetchData}/>
+                ]
+                this.setState({stats: array})
             })
         })
+
         firebase
             .firestore()
             .collection("Art")
@@ -94,7 +118,6 @@ class Analytics extends React.Component {
                 const data = serverUpdate.docs.map(_docs => {
                     const d = _docs.data();
                     array[d.Name] = d.Price
-                    console.log("ARRAY", array)
                     return d;
                 })
                 this.setState({arts: data})
@@ -115,8 +138,7 @@ class Analytics extends React.Component {
                     date={now}
                     selectDate={this.selectDate}/>
                 <div className="stats">
-                    <Stat name="TODAY"  data={this.state.records} date={this.state.selectedDate} fetchData={this.fetchData}/>
-                    <Stat name="TODAY"  data={this.state.records} date={this.state.selectedDate} fetchData={this.fetchData}/>
+                    {this.state.stats}
                 </div>
                 <div className="balance"></div>
             </div>
