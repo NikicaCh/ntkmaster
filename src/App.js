@@ -14,9 +14,10 @@ class App extends React.Component {
     super();
 
     this.state = {
-      data: null
+      data: null,
     }
   }
+
 
   componentDidMount = () => {
     
@@ -40,10 +41,10 @@ class App extends React.Component {
             <Route exact path="/" component={Home} />
             <Route
               exact path="/season"
-              component={() => <Season />} />
+              component={() => <Season/>} />
 
             <Route exact path="/articles" component={Articles} />
-            <Route exact path="/analytics" component={Analytics} />
+            <Route exact path="/analytics" component={() => <Analytics/>} />
           </Switch>
         </BrowserRouter>
       </div>

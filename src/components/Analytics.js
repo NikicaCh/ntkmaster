@@ -83,11 +83,15 @@ class Analytics extends React.Component {
         .firestore()
         .collection("Bolla")  
         .onSnapshot(serverUpdate => {
+            let array = [];
             const data = serverUpdate.docs.map(_docs => {
                 const d = _docs.data();
-                return d;
+                if(d.Sewed) {
+                    array.push(d)
+                }
             })
-            this.setState({records: data}, () => {
+            this.setState({records: array}, () => {
+                //Refactor goes here   
                 let notSunday = "";
                 let dayBefore = "";
                 if(days[d.getDay() -1] === "Sunday") {

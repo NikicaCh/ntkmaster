@@ -101,6 +101,35 @@ class Season extends React.Component {
         .catch(err => console.log(err))
     }
 
+    query = (index) => {
+        let array = [];
+        this.state.allRecords.map((record) => {
+            if( index === 3 && record.Cut.props.checked && record.Sewed.props.checked && record.Export.props.checked !== true) {
+                array.push(record)
+            }
+            else if( index === 4 && record.Cut.props.checked && record.Sewed.props.checked && record.Export.props.checked) {
+                array.push(record)
+            }
+            else if(index === 0) {
+                array.push(record);
+            } else if( index === 1 && record.Cut.props.checked !== true && record.Sewed.props.checked !== true && record.Export.props.checked !== true) {
+                array.push(record)
+            } else if( index === 2 && record.Cut.props.checked && record.Sewed.props.checked !== true && record.Export.props.checked !== true) {
+                array.push(record)
+            } 
+        })
+        this.setState({records:array, exportRecords:array}, () => {
+            this.countRows();
+        })
+    }
+
+    queryIndex = (index) => {
+        this.setState({queryInd: index}, () => {
+            this.query(index);
+        })
+    }
+
+
     componentDidMount() {
         firebase
         .firestore()
@@ -140,34 +169,7 @@ class Season extends React.Component {
         //     });
     }
 
-    query = (index) => {
-        let array = [];
-        this.state.allRecords.map((record) => {
-            if( index === 3 && record.Cut.props.checked && record.Sewed.props.checked && record.Export.props.checked !== true) {
-                array.push(record)
-            }
-            else if( index === 4 && record.Cut.props.checked && record.Sewed.props.checked && record.Export.props.checked) {
-                array.push(record)
-            }
-            else if(index === 0) {
-                array.push(record);
-            } else if( index === 1 && record.Cut.props.checked !== true && record.Sewed.props.checked !== true && record.Export.props.checked !== true) {
-                array.push(record)
-            } else if( index === 2 && record.Cut.props.checked && record.Sewed.props.checked !== true && record.Export.props.checked !== true) {
-                array.push(record)
-            } 
-        })
-        this.setState({records:array, exportRecords:array}, () => {
-            this.countRows();
-        })
-    }
-
-    queryIndex = (index) => {
-        this.setState({queryInd: index}, () => {
-            this.query(index);
-        })
-    }
-
+   
     dailyReport = async() => {
         let date = this.state.selectedDate;
         let firstArray = [];
