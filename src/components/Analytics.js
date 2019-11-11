@@ -14,6 +14,8 @@ const Stat = (props) => {
         <div className="stat">
         {props.name}
         <br />
+        <span className="stat-date">{props.date}</span>
+        <br />
         {total + "€"}
         </div>
     )
@@ -32,6 +34,7 @@ class Analytics extends React.Component {
 
         this.state = {
             records: [],
+            thisWeek: [],
             arts: [],
             selectedDate: "",
             stats: []
@@ -44,6 +47,8 @@ class Analytics extends React.Component {
         let array = [];
         data.map((record) => {
             if(record.SewedDate === date ) {
+                array.push(record)
+            } else if(date === true) {
                 array.push(record)
             }
         })    
@@ -69,7 +74,7 @@ class Analytics extends React.Component {
     }
 
     componentDidMount() {
-        let days = [ "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+        let days = [ "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
         let now = new Date();
         const selectedDate = date.format(now, "DD.MM.YYYY")
         this.setState({selectedDate})
@@ -84,33 +89,59 @@ class Analytics extends React.Component {
         .collection("Bolla")  
         .onSnapshot(serverUpdate => {
             let array = [];
+            let thisWeek = [];
             const data = serverUpdate.docs.map(_docs => {
                 const d = _docs.data();
-                if(d.Sewed) {
+                if(d.Cut && d.Sewed && d.Export !== true) {
+                    thisWeek.push(d)
+                    array.push(d)
+                } else if(d.Sewed) {
                     array.push(d)
                 }
             })
-            this.setState({records: array}, () => {
+            this.setState({records: array, thisWeek}, () => {
                 //Refactor goes here   
-                let notSunday = "";
-                let dayBefore = "";
-                if(days[d.getDay() -1] === "Sunday") {
-                    notSunday = days[d.getDay() - 2]
-                    dayBefore = days[d.getDay() - 3]
-                } else if(days[d.getDay() -2] === "Sunday") {
-                    notSunday = days[d.getDay() -1]
-                    dayBefore = days[d.getDay() - 3]
+                let dates = []
+
+                for(let i=0; i<=5; i++) {
+                    let now = new Date(new Date().setDate(new Date().getDate()-i));
+                    now = date.format(now, "DD.MM.YYYY")
+                    dates[i + 1] = {
+                        name: days[new Date(new Date().setDate(new Date().getDate()-i)).getDay()],
+                        date: now 
+                    }
                 }
-                else {
-                    notSunday = days[d.getDay() -1]
-                    dayBefore = days[d.getDay() -2]
-                }
-                let array = [
-                    <Stat name="Today"  data={this.state.records} date={this.state.selectedDate} fetchData={this.fetchData}/>,
-                    <Stat name={notSunday}  data={this.state.records} date={yesterday} fetchData={this.fetchData}/>,
-                    <Stat name={dayBefore}  data={this.state.records} date={dayBeforeYesterday} fetchData={this.fetchData}/>
-                ]
-                this.setState({stats: array})
+                let arrayOfStats = [];
+
+                dates.map((date) => {
+                    if(date.name !== "Sunday") {
+                        arrayOfStats.push(<Stat name={date.name}  data={this.state.records} date={date.date} fetchData={this.fetchData}/>,)
+                    }
+                })
+
+                this.setState({stats: arrayOfStats})
+
+
+                // let notSunday = "";
+                // let dayBefore = "";
+                // if(days[d.getDay() -1] === "Sunday") {
+                //     notSunday = days[d.getDay() - 2]
+                //     dayBefore = days[d.getDay() - 3]
+                // } else if(days[d.getDay() -2] === "Sunday") {
+                //     notSunday = days[d.getDay() -1]
+                //     dayBefore = days[d.getDay() - 3]
+                // }
+                // else {
+                //     notSunday = days[d.getDay() -1]
+                //     dayBefore = days[d.getDay() -2]
+                // }
+                // let array = [
+                //     <Stat name="Today"  data={this.state.records} date={this.state.selectedDate} fetchData={this.fetchData}/>,
+                //     <Stat name={notSunday}  data={this.state.records} date={yesterday} fetchData={this.fetchData}/>,
+                //     <Stat name={dayBefore}  data={this.state.records} date={dayBeforeYesterday} fetchData={this.fetchData}/>,
+                //     <Stat name={"this week"} data={this.state.thisWeek} date={true} fetchData={this.fetchData}/>
+                // ]
+                // this.setState({stats: array})
             })
         })
 

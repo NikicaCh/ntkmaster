@@ -53,6 +53,8 @@
     border-radius: 10px;
 }
 
+
+
 .balance {
     position: absolute;
     top: 12%;
@@ -80,4 +82,10 @@
     margin: 3% 10% 0 2%;
     font-size: 1.7vw;
     font-family: 'Open Sans Condensed', sans-serif;
+}
+
+.stat-date {
+    position: absolute;
+    top: 30%;
+    font-size: .8vw;
 }
