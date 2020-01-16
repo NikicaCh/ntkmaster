@@ -157,7 +157,7 @@ class  MaterialTableDemo extends React.Component {
         date={now}
         selectDate={this.selectDate}/>
       <Snackbar />
-      <Switches  pagination={this.switchPagination}/>
+      {/* <Switches  pagination={this.switchPagination}/> */}
       <MaterialTable
         title="Season 201"
         columns={this.state.TableColumns}

@@ -3,6 +3,7 @@ import Navbar from './navbar'
 import DatePicker from './DatePicker'
 import firebase from 'firebase'
 import date from 'date-and-time'
+import CheckboxList from './ExportList'
 
 
 const Stat = (props) => {
@@ -37,10 +38,36 @@ class Analytics extends React.Component {
             thisWeek: [],
             arts: [],
             selectedDate: "",
-            stats: []
+            stats: [],
+            exported: [], 
+            total: 0,
+            
         }
+        this.exported = this.exported.bind(this)
         this.fetchData = this.fetchData.bind(this)
         this.selectDate = this.selectDate.bind(this)
+        this.total = this.total.bind(this)
+    }
+
+    total = (value) => {
+        this.setState({total: value})
+    }
+
+    exported = (data) => {
+        let exported = []
+
+        data.map((record) => {
+            if(record.Cut && record.Sewed && record.Export) {
+                exported.push(record)
+            }
+        })
+        this.setState({exported}, () => {
+            let groupByDate = groupBy("ExportDate")
+            const grouped = groupByDate(this.state.exported)
+            Object.keys(grouped).map((_exp, _key) => {
+            })
+            this.setState({exported: grouped})
+        })   
     }
 
     fetchData = (data, date, state) => {
@@ -74,16 +101,7 @@ class Analytics extends React.Component {
     }
 
     componentDidMount() {
-        let days = [ "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
-        let now = new Date();
-        const selectedDate = date.format(now, "DD.MM.YYYY")
-        this.setState({selectedDate})
-        let d = new Date();
-        d.setDate(d.getDate() -1)
-        const yesterday = date.format(d, "DD.MM.YYYY")
-        let g = new Date();
-        g.setDate(d.getDate() -2)
-        const dayBeforeYesterday = date.format(g, "DD.MM.YYYY")
+        let days = [ "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
         firebase
         .firestore()
         .collection("Bolla")  
@@ -101,6 +119,7 @@ class Analytics extends React.Component {
             })
             this.setState({records: array, thisWeek}, () => {
                 //Refactor goes here   
+                this.exported(this.state.records)
                 let dates = []
 
                 for(let i=0; i<=5; i++) {
@@ -120,28 +139,6 @@ class Analytics extends React.Component {
                 })
 
                 this.setState({stats: arrayOfStats})
-
-
-                // let notSunday = "";
-                // let dayBefore = "";
-                // if(days[d.getDay() -1] === "Sunday") {
-                //     notSunday = days[d.getDay() - 2]
-                //     dayBefore = days[d.getDay() - 3]
-                // } else if(days[d.getDay() -2] === "Sunday") {
-                //     notSunday = days[d.getDay() -1]
-                //     dayBefore = days[d.getDay() - 3]
-                // }
-                // else {
-                //     notSunday = days[d.getDay() -1]
-                //     dayBefore = days[d.getDay() -2]
-                // }
-                // let array = [
-                //     <Stat name="Today"  data={this.state.records} date={this.state.selectedDate} fetchData={this.fetchData}/>,
-                //     <Stat name={notSunday}  data={this.state.records} date={yesterday} fetchData={this.fetchData}/>,
-                //     <Stat name={dayBefore}  data={this.state.records} date={dayBeforeYesterday} fetchData={this.fetchData}/>,
-                //     <Stat name={"this week"} data={this.state.thisWeek} date={true} fetchData={this.fetchData}/>
-                // ]
-                // this.setState({stats: array})
             })
         })
 
@@ -157,7 +154,8 @@ class Analytics extends React.Component {
                 })
                 this.setState({arts: data})
             })
-    }
+        }
+        
 
     selectDate = (date) => {
         this.setState({selectedDate: date})
@@ -175,7 +173,16 @@ class Analytics extends React.Component {
                 <div className="stats">
                     {this.state.stats}
                 </div>
-                <div className="balance"></div>
+                <div className="balance">
+                <div className="stat-total">
+                    {"TOTAL"}
+                    <br />
+                    {this.state.total + "€"} 
+                    </div>
+                </div>
+                <div className="exports">
+                    <CheckboxList data={this.state.exported} arts={this.state.arts} total={this.total} totalValue={this.state.total} />
+                </div>
             </div>
         )
     }
