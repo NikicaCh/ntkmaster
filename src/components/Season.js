@@ -15,7 +15,7 @@ import CircularIntegration from "./saveButton";
 
 //old url from heroku service: https://xlsx-populator.herokuapp.com/
 let urlDev = "http://localhost:8000/";
-let urlProd = "https://xlsx-populator-production.up.railway.app/"; //new service railway trigger
+let urlProd = "https://xlsx-populator-production.up.railway.app/"; //new service railway hosting trigger
 let theUrl = urlProd;
 
 class Season extends React.Component {
