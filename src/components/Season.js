@@ -332,7 +332,7 @@ class Season extends React.Component {
     return (
       <div className="Season">
         <div className="total">
-          <span>Total: {this.state.total}</span>
+          <span>Total: {this.state.total} p.</span>
         </div>
         <div className="report-button">
           <CircularIntegration print={this.dailyReport} />
