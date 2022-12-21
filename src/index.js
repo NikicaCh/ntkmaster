@@ -7,6 +7,7 @@ import App from "./App";
 // // require("dotenv").config();
 
 // const db = app.firestore(app);
+//test
 
 ReactDOM.render(<App />, document.getElementById("root"));
 
