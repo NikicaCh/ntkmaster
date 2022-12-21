@@ -1,10 +1,10 @@
 import React from "react";
-import firebase from "firebase";
-import XLSX from "xlsx";
-import { saveAs } from "file-saver";
-import * as Excel from "exceljs";
+import { app } from "../firebase.tsx";
+import { firestore } from "firebase";
+import "firebase/firestore";
+
 import Axios from "axios";
-import XlsxPopulate from "xlsx-populate";
+// import XlsxPopulate from "xlsx-populate";
 import date from "date-and-time";
 
 //Components
@@ -147,8 +147,7 @@ class Season extends React.Component {
   };
 
   componentDidMount() {
-    firebase
-      .firestore()
+    firestore()
       .collection("Bolla")
       .onSnapshot((serverUpdate) => {
         const data = serverUpdate.docs.map((_docs) => {
@@ -158,9 +157,9 @@ class Season extends React.Component {
         this.setState({ allRecords: data, records: data });
         this.query(this.state.queryInd);
       });
-    setInterval(() => {
-      this.wakeUpServer();
-    }, 29000);
+    // setInterval(() => {
+    //   this.wakeUpServer();
+    // }, 29000);
     let now = new Date();
     const selectedDate = date.format(now, "DD.MM.YYYY");
     this.setState({ selectedDate });
@@ -208,7 +207,7 @@ class Season extends React.Component {
           setTimeout(() => {
             Axios.get(`${theUrl}download`).then((response) => {
               window.location.href =
-                "data:" + XlsxPopulate.MIME_TYPE + ";base64," + response.data;
+                "data:" + "text/csv" + ";base64," + response.data;
             });
           }, 500);
         }
@@ -229,10 +228,9 @@ class Season extends React.Component {
       .then((response) => {
         if (response.status === 201) {
           setTimeout(() => {
-            console.log("CALLED");
             Axios.get(`${theUrl}export`).then((response) => {
               window.location.href =
-                "data:" + XlsxPopulate.MIME_TYPE + ";base64," + response.data;
+                "data:" + "text/csv" + ";base64," + response.data;
             });
           }, 500);
         }
@@ -247,8 +245,7 @@ class Season extends React.Component {
   addToDb = (data) => {
     data.map((_data) => {
       const uniqueId = _data.Bolla;
-      firebase
-        .firestore()
+      firestore()
         .collection("Bolla")
         .doc(uniqueId)
         .set(_data)
@@ -276,7 +273,7 @@ class Season extends React.Component {
       if (newData[_key] !== oldData[_key] && typeof newData[_key] === "string")
         obj[_key] = newData[_key];
     });
-    let doc = firebase.firestore().collection("Bolla").doc(oldData.Bolla);
+    let doc = firestore().collection("Bolla").doc(oldData.Bolla);
     doc
       .update(obj)
       .then(() => {
@@ -288,8 +285,7 @@ class Season extends React.Component {
   };
 
   deleteFromDb = (id) => {
-    firebase
-      .firestore()
+    firestore()
       .collection("Bolla")
       .doc(id)
       .delete()
@@ -312,7 +308,7 @@ class Season extends React.Component {
     this.setState({ selectedDate: date });
   };
   componentWillUnmount() {
-    firebase
+    app
       .auth()
       .signOut()
       .then(
