@@ -6,6 +6,7 @@ import { auth } from "firebase";
 import SignIn from "./Sign-in";
 
 // let auth = getAuth(app);
+//test
 
 class Home extends React.Component {
   componentDidMount() {

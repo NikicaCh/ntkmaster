@@ -4,6 +4,7 @@ import { app } from "../firebase.tsx";
 //Components
 import Navbar from "./navbar";
 import MaterialTableDemo from "./Table";
+//test
 
 class Articles extends React.Component {
   constructor(props) {

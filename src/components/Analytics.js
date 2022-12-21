@@ -155,6 +155,7 @@ class Analytics extends React.Component {
           this.setState({ stats: arrayOfStats });
         });
       });
+    //test
 
     app
       .firestore()
